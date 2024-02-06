@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// Update takes an UpdateRequest object and hands it to UpdateClient() defined in client.go. Returns a Client Object.
 func Update(context *gin.Context) {
 	var request UpdateRequest
 	if err := context.BindJSON(&request); err != nil {
@@ -13,25 +14,29 @@ func Update(context *gin.Context) {
 		return
 	}
 	client := UpdateClient(request.Id, context.ClientIP(), request.Error)
-	context.IndentedJSON(http.StatusOK, *client)
+	context.JSON(http.StatusOK, *client)
 }
 
+// GetClientList returns the current contents of the var clients as an array
 func GetClientList(context *gin.Context) {
 	var ret = make([]Client, 0)
 	for _, client := range clients {
 		ret = append(ret, *client)
 	}
-	context.IndentedJSON(http.StatusOK, ret)
+	context.JSON(http.StatusOK, ret)
 }
 
+// StartTunnel calls AlterTunnel with status set to true
 func StartTunnel(context *gin.Context) {
 	AlterTunnel(context, true)
 }
 
+// StopTunnel calls AlterTunnel with status set to false
 func StopTunnel(context *gin.Context) {
 	AlterTunnel(context, false)
 }
 
+// AlterTunnel calls UpdateClientStatus with the status passed in by the caller
 func AlterTunnel(context *gin.Context, status bool) {
 	var request StartTunnelRequest
 	if err := context.BindJSON(&request); err != nil {
@@ -40,8 +45,8 @@ func AlterTunnel(context *gin.Context, status bool) {
 	}
 
 	if success := UpdateClientStatus(request.Id, status); !success {
-		returnError(context, "Client doesn't exist!", http.StatusBadRequest)
+		ReturnError(context, "Client doesn't exist!", http.StatusBadRequest)
 	} else {
-		context.IndentedJSON(http.StatusOK, Response{})
+		context.JSON(http.StatusOK, Response{})
 	}
 }

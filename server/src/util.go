@@ -5,19 +5,20 @@ import (
 	"net/http"
 )
 
-func validateRequest() gin.HandlerFunc {
+// ValidateRequest looks for the header x-api-key and checks to see if it matches the ApiKey from the config
+func ValidateRequest() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		if context.GetHeader("x-api-key") == conf.ApiKey {
 			context.Next()
 		} else {
-			returnError(context, "Not Authorized!", http.StatusUnauthorized)
+			ReturnError(context, "Not Authorized!", http.StatusUnauthorized)
 		}
 	}
 }
 
-func returnError(context *gin.Context, error string, status int) {
-	context.IndentedJSON(status, Response{
+// ReturnError stops the handler chain with a Response object with the error filled out and the HTTP status
+func ReturnError(context *gin.Context, error string, status int) {
+	context.AbortWithStatusJSON(status, Response{
 		Error: error,
 	})
-	_ = context.AbortWithError(status, gin.Error{})
 }
