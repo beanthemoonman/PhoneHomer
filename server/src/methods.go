@@ -12,7 +12,7 @@ func Update(context *gin.Context) {
 		print(err)
 		return
 	}
-	client := UpdateClient(request.Id, context.ClientIP())
+	client := UpdateClient(request.Id, context.ClientIP(), request.Error)
 	context.IndentedJSON(http.StatusOK, *client)
 }
 

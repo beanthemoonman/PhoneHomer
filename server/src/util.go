@@ -19,4 +19,5 @@ func returnError(context *gin.Context, error string, status int) {
 	context.IndentedJSON(status, Response{
 		Error: error,
 	})
+	_ = context.AbortWithError(status, gin.Error{})
 }

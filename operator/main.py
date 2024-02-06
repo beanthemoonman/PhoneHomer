@@ -25,6 +25,10 @@ if __name__ == '__main__':
             url="http://localhost:8080/getClientList",
             headers={"x-api-key": "1234"}
         ))
+        runAndPrint(requests.get(
+            url="http://localhost:8080/getClientList",
+            headers={"x-api-key": "1234a"}
+        ))
         # for i in range(0, 19999):
         #     requests.post(
         #         url="http://localhost:8080/update",

@@ -14,6 +14,7 @@ var syncMapLock = sync.Mutex{}
 type Client struct {
 	Id         string    `json:"id"`
 	IpAddress  string    `json:"ipAddress"`
+	Error      string    `json:"error"`
 	PhoneHome  bool      `json:"phoneHome"`
 	LastUpdate time.Time `json:"lastUpdate"`
 }
@@ -25,7 +26,7 @@ func GetClient(id string) *Client {
 	return clients[id]
 }
 
-func UpdateClient(id string, ipAddress string) *Client {
+func UpdateClient(id string, ipAddress string, error string) *Client {
 	lock := getLock(id)
 	lock.Lock()
 	client := GetClient(id)
@@ -33,6 +34,7 @@ func UpdateClient(id string, ipAddress string) *Client {
 		clients[id] = &Client{
 			Id:         id,
 			IpAddress:  ipAddress,
+			Error:      error,
 			PhoneHome:  false,
 			LastUpdate: time.Now(),
 		}
@@ -41,6 +43,7 @@ func UpdateClient(id string, ipAddress string) *Client {
 		clients[id] = &Client{
 			Id:         client.Id,
 			IpAddress:  ipAddress,
+			Error:      error,
 			PhoneHome:  client.PhoneHome,
 			LastUpdate: time.Now(),
 		}
@@ -61,6 +64,7 @@ func UpdateClientStatus(id string, phoneHome bool) bool {
 	clients[id] = &Client{
 		Id:         client.Id,
 		IpAddress:  client.IpAddress,
+		Error:      client.Error,
 		PhoneHome:  phoneHome,
 		LastUpdate: client.LastUpdate,
 	}

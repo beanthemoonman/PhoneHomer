@@ -10,5 +10,5 @@ type UpdateRequest struct {
 }
 
 type Response struct {
-	Error string `json:"error,omitempty"`
+	Error string `json:"error"`
 }
