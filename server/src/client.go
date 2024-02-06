@@ -14,12 +14,13 @@ var clientsSync = make(map[string]*sync.Mutex)
 // syncMapLock gets used in GetLock to prevent to threads from creating a lock for a Client at the same time
 var syncMapLock = sync.Mutex{}
 
+// Client represents the client servers connecting to the PhoneHomer API
 type Client struct {
-	Id         string    `json:"id"`
-	IpAddress  string    `json:"ipAddress"`
-	Error      string    `json:"error"`
-	PhoneHome  bool      `json:"phoneHome"`
-	LastUpdate time.Time `json:"lastUpdate"`
+	Id         string    `json:"id"`         //Unique ID for the client
+	IpAddress  string    `json:"ipAddress"`  //Client IP
+	Error      string    `json:"error"`      //Error if the client wants to report trouble
+	PhoneHome  bool      `json:"phoneHome"`  //Should the client phone home
+	LastUpdate time.Time `json:"lastUpdate"` //When did the client last reach out
 }
 
 // GetClient returns the Client pointer if it exists in clients otherwise it returns nil
