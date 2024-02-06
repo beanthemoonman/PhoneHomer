@@ -66,7 +66,7 @@ func UpdateClientStatus(id string, phoneHome bool) bool {
 	return true
 }
 
-// GetLock implements a double-checking checking method for lock creation. Returns the lock.
+// GetLock implements a double-checking lock method for lock creation. Returns the lock.
 func GetLock(id string) *sync.Mutex {
 	if _, ok := clientsSync[id]; !ok {
 		syncMapLock.Lock()
