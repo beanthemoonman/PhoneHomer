@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-// Clients is a map of Client structs that gets used for the API
+// clients is a map of Client structs that gets used for the API
 var clients = make(map[string]*Client)
 
-// ClientsSync is a map of Mutexes that allow us to make sure that only one thread is touching a client object at one time
+// clientsSync is a map of Mutexes that allow us to make sure that only one thread is touching a client object at one time
 var clientsSync = make(map[string]*sync.Mutex)
 
 // syncMapLock gets used in GetLock to prevent to threads from creating a lock for a Client at the same time

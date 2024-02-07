@@ -19,9 +19,9 @@ func Update(context *gin.Context) {
 
 // GetClientList returns the current contents of the var clients as an array
 func GetClientList(context *gin.Context) {
-	var ret = make([]Client, 0)
+	var ret = make([]*Client, 0)
 	for _, client := range clients {
-		ret = append(ret, *client)
+		ret = append(ret, client)
 	}
 	context.JSON(http.StatusOK, ret)
 }
@@ -43,7 +43,6 @@ func AlterTunnel(context *gin.Context, status bool) {
 		fmt.Println(err)
 		return
 	}
-
 	if success := UpdateClientStatus(request.Id, status); !success {
 		ReturnError(context, "Client doesn't exist!", http.StatusBadRequest)
 	} else {
