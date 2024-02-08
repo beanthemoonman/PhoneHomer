@@ -6,13 +6,11 @@ import (
 )
 
 // ValidateRequest looks for the header x-api-key and checks to see if it matches the ApiKey from the config
-func ValidateRequest() gin.HandlerFunc {
-	return func(context *gin.Context) {
-		if context.GetHeader("x-api-key") == conf.ApiKey {
-			context.Next()
-		} else {
-			ReturnError(context, "Not Authorized!", http.StatusUnauthorized)
-		}
+func ValidateRequest(context *gin.Context) {
+	if context.GetHeader("x-api-key") == conf.ApiKey {
+		context.Next()
+	} else {
+		ReturnError(context, "Not Authorized!", http.StatusUnauthorized)
 	}
 }
 

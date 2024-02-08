@@ -11,7 +11,7 @@ func PhoneHomerAPIv1(url string, port int) bool {
 	if err := router.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
 		return false
 	}
-	router.Use(ValidateRequest())
+	router.Use(ValidateRequest)
 	router.POST("/update", Update)
 	router.GET("/getClientList", GetClientList)
 	router.POST("/startTunnel", StartTunnel)
