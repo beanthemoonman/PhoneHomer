@@ -8,11 +8,8 @@ import (
 // clients is a map of Client structs that gets used for the API
 var clients = make(map[string]*Client)
 
-// clientsSync is a map of Mutexes that allow us to make sure that only one thread is touching a client object at one time
-var clientsSync = make(map[string]*sync.Mutex)
-
 // syncMapLock gets used in GetLock to prevent to threads from creating a lock for a Client at the same time
-var syncMapLock = sync.Mutex{}
+var syncMapLock = &sync.RWMutex{}
 
 // Client represents the client servers connecting to the PhoneHomer API
 type Client struct {
@@ -33,8 +30,7 @@ func GetClient(id string) *Client {
 
 // UpdateClient creates a Client in clients if no client exists, otherwise it updates the existing object
 func UpdateClient(id string, ipAddress string, error string) *Client {
-	lock := GetLock(id)
-	lock.Lock()
+	syncMapLock.Lock()
 	client := GetClient(id)
 	if client == nil {
 		clients[id] = &Client{
@@ -49,32 +45,30 @@ func UpdateClient(id string, ipAddress string, error string) *Client {
 		clients[id].Error = error
 		clients[id].LastUpdate = time.Now()
 	}
-	lock.Unlock()
-	return clients[id]
+	client = clients[id]
+	syncMapLock.Unlock()
+	return client
 }
 
 // UpdateClientStatus returns false if it can't find a Client for id, otherwise it updates the PhoneHome property of the Client
 func UpdateClientStatus(id string, phoneHome bool) bool {
-	lock := GetLock(id)
-	lock.Lock()
+	syncMapLock.Lock()
 	client := GetClient(id)
 	if client == nil {
-		lock.Unlock()
+		syncMapLock.Unlock()
 		return false
 	}
 	clients[id].PhoneHome = phoneHome
-	lock.Unlock()
+	syncMapLock.Unlock()
 	return true
 }
 
-// GetLock implements a double-checking lock method for lock creation. Returns the lock.
-func GetLock(id string) *sync.Mutex {
-	if _, ok := clientsSync[id]; !ok {
-		syncMapLock.Lock()
-		if _, ok2 := clientsSync[id]; !ok2 {
-			clientsSync[id] = &sync.Mutex{}
-		}
-		syncMapLock.Unlock()
+func getClientsAsList() []*Client {
+	syncMapLock.RLock()
+	var ret = make([]*Client, 0)
+	for _, client := range clients {
+		ret = append(ret, client)
 	}
-	return clientsSync[id]
+	syncMapLock.RUnlock()
+	return ret
 }

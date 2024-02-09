@@ -19,11 +19,7 @@ func Update(context *gin.Context) {
 
 // GetClientList returns the current contents of the var clients as an array
 func GetClientList(context *gin.Context) {
-	var ret = make([]*Client, 0)
-	for _, client := range clients {
-		ret = append(ret, client)
-	}
-	context.JSON(http.StatusOK, ret)
+	context.JSON(http.StatusOK, getClientsAsList())
 }
 
 // StartTunnel calls AlterTunnel with status set to true
